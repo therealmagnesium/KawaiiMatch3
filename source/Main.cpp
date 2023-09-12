@@ -1,10 +1,11 @@
-#include <raylib.h>
-#include <stdio.h>
+#include "Game.h"
 
 int main(int argc, char* argv[])
 {
-    InitWindow(800, 600, "");
+    // Allocate on the heap because it's the actual application
+    Game* game = new Game(1280, 720, "Kawaii Match!");
+    game->Run();
+    delete game;
 
-    puts("Hello World");
     return 0;
 }
