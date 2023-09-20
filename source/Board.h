@@ -1,25 +1,20 @@
 #pragma once
-#include <raylib.h>
 
-#define BOARD_WIDTH 8
-#define BOARD_HEIGHT 6
-#define TILE_SIZE 64
-#define TILE_TYPE_AMOUNT 5
+#include "Tile.h"
+#include "Types.h"
+#include <vector>
 
-enum class TileType
-{
-    CAT = 0,
-    DOG,
-    BUNNY,
-    PANDA,
-    ELEPHANT
-};
+#define BOARD_ROWS 4
+#define BOARD_COLS 5
 
 struct Board
 {
-    Vector2 offset;
-    TileType grid[BOARD_WIDTH * BOARD_HEIGHT];
+    Texture2D faceDownTexture;
+    Vector2 tileOffset;
+    std::vector<Tile*> tiles;
 
-    void Setup();
+    void Setup(u32 windowWidth, u32 windowHeight);
+    void Update();
     void Draw();
+    void Clean();
 };

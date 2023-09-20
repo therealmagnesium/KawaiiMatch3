@@ -2,12 +2,12 @@
 
 #include <raylib.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 
-Game::Game(u32 width, u32 height, const char* title)
+#define FPS_MARGIN 20
+
+Game::Game(const WindowData& data) : windowData(data)
 {
-    Init(width, height, title);
+    Init(data);
 }
 
 Game::~Game()
@@ -15,38 +15,35 @@ Game::~Game()
     ShutDown();
 }
 
-void Game::Init(u32 width, u32 height, const char* title)
+void Game::Init(const WindowData& data)
 {
     // Init raylib shit
-    InitWindow(width, height, title);
+    InitWindow(data.width, data.height, data.title);
     SetTargetFPS(120);
 
-    srand(time(NULL)); // Generate a random seed
-
     // Setup game stuff
-    m_board.offset.x = width / 2.f - (TILE_SIZE * BOARD_WIDTH) / 2.f;
-    m_board.offset.y = height / 2.f - (TILE_SIZE * BOARD_HEIGHT) / 2.f;
-    m_board.Setup();
+    board.Setup(data.width, data.height);
 }
 
 void Game::ShutDown()
 {
+    board.Clean();
     CloseWindow();
 }
 
 void Game::Update()
 {
+    board.Update();
 }
 
 void Game::Render()
 {
-
     BeginDrawing();
 
     ClearBackground(SKYBLUE);
-    DrawFPS(10, 10);
+    DrawFPS(FPS_MARGIN / 2, windowData.height - FPS_MARGIN);
 
-    m_board.Draw();
+    board.Draw();
 
     EndDrawing();
 }

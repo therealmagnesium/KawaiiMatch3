@@ -1,49 +1,53 @@
 #include "Board.h"
-#include "raylib.h"
-#include <stdlib.h>
-void Board::Setup()
+
+void Board::Setup(u32 windowWidth, u32 windowHeight)
 {
-    // Loop through the board and fill it with random tiles
-    for (int i = 0; i < BOARD_HEIGHT; i++)
+    faceDownTexture = LoadTexture("assets/textures/leaf.png");
+
+    tileOffset.x = windowWidth / 2.f - (BOARD_COLS * TILE_SIZE) / 2.f;
+    tileOffset.y = windowHeight / 2.f - (BOARD_ROWS * TILE_SIZE) / 2.f;
+
+    for (int i = 0; i < BOARD_ROWS; i++)
     {
-        for (int j = 0; j < BOARD_WIDTH; j++)
+        for (int j = 0; j < BOARD_COLS; j++)
         {
-            TileType tile = (TileType)(rand() % TILE_TYPE_AMOUNT);
-            grid[i * BOARD_WIDTH + j] = tile;
+            Vector2 position = {j * (TILE_SIZE + 8) + tileOffset.x, i * (TILE_SIZE + 8) + tileOffset.y};
+            Tile* tile = new Tile(position);
+            tiles.push_back(tile);
+        }
+    }
+}
+
+void Board::Clean()
+{
+    for (int i = 0; i < tiles.size(); i++)
+    {
+        if (tiles[i])
+            delete tiles[i];
+    }
+}
+
+void Board::Update()
+{
+    for (int i = 0; i < tiles.size(); i++)
+    {
+        tiles[i]->tint = {0xFF, 0xFF, 0xFF, 0xFF};
+
+        if (tiles[i]->IsUnderMouse() && !tiles[i]->faceUp)
+        {
+            tiles[i]->tint = {0xDD, 0xDD, 0xDD, 0xFF};
+
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                tiles[i]->faceUp = true;
         }
     }
 }
 
 void Board::Draw()
 {
-    // Loop through the board, draw the grid and tiles
-    for (int i = 0; i < BOARD_HEIGHT; i++)
+    for (int i = 0; i < tiles.size(); i++)
     {
-        for (int j = 0; j < BOARD_WIDTH; j++)
-        {
-            Rectangle cellRect = {(float)j * TILE_SIZE + offset.x, (float)i * TILE_SIZE + offset.y, TILE_SIZE,
-                                  TILE_SIZE};
-            DrawRectangleLinesEx(cellRect, 2.f, PINK);
-
-            TileType tile = grid[i * BOARD_WIDTH + j];
-            switch (tile)
-            {
-            case TileType::CAT:
-                DrawCircleV({cellRect.x + (cellRect.width / 2.f), cellRect.y + (cellRect.width / 2.f)}, 25.f, YELLOW);
-                break;
-            case TileType::DOG:
-                DrawCircleV({cellRect.x + (cellRect.width / 2.f), cellRect.y + (cellRect.width / 2.f)}, 25.f, BEIGE);
-                break;
-            case TileType::BUNNY:
-                DrawCircleV({cellRect.x + (cellRect.width / 2.f), cellRect.y + (cellRect.width / 2.f)}, 25.f, WHITE);
-                break;
-            case TileType::PANDA:
-                DrawCircleV({cellRect.x + (cellRect.width / 2.f), cellRect.y + (cellRect.width / 2.f)}, 25.f, BLACK);
-                break;
-            case TileType::ELEPHANT:
-                DrawCircleV({cellRect.x + (cellRect.width / 2.f), cellRect.y + (cellRect.width / 2.f)}, 25.f, GRAY);
-                break;
-            }
-        }
+        if (tiles[i])
+            tiles[i]->Draw(faceDownTexture);
     }
 }
