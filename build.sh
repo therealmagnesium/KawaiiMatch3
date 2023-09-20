@@ -23,15 +23,15 @@ else
     fi
 
     mv compile_commands.json ..
-    #cp -r ../Sandbox/assets ./Sandbox
+    cp -r ../assets .
 
-    make all
+    make all -j7
 
-    echo -n "Would you like to run the project? (y/n): "
-    read execute
-    if [ $execute == 'y' ]; then
-        ./KawaiiMatch3
-    fi
+    #    echo -n "Would you like to run the project? (y/n): "
+    #    read execute
+    #    if [ $execute == 'y' ]; then
+    #       ./KawaiiMatch3
+    #   fi
 
     cd ../..
 fi
