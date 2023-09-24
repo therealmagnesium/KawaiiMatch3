@@ -1,11 +1,10 @@
 #include "Tile.h"
 
-Tile::Tile(Vector2 positionIn) : position(positionIn)
+Tile::Tile(Vector2 positionIn, const Texture2D& faceIn) : position(positionIn), face(faceIn)
 {
     size = {TILE_SIZE, TILE_SIZE};
     body = {position.x, position.y, size.x, size.y};
     tint = {0xFF, 0xFF, 0xFF, 0xFF};
-    face = LoadTexture("assets/textures/face.png");
 }
 
 Tile::~Tile()

@@ -12,7 +12,7 @@ struct Tile
     Color tint;
     Texture2D face;
 
-    Tile(Vector2 positionIn);
+    Tile(Vector2 positionIn, const Texture2D& faceIn);
     ~Tile();
 
     bool IsUnderMouse();

@@ -22,6 +22,8 @@ void Game::Init(const WindowData& data)
     SetTargetFPS(120);
 
     // Setup game stuff
+    board.Fill();
+    board.Shuffle();
     board.Setup(data.width, data.height);
 }
 
