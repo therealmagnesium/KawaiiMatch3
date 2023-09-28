@@ -3,28 +3,28 @@
 
 // A bunch of card face textures
 static Texture2D bearTexture;
-static Texture2D bobTexture;
 static Texture2D bunnyTexture;
 static Texture2D catTexture;
+static Texture2D cowTexture;
 static Texture2D dogTexture;
-static Texture2D faceTexture;
 static Texture2D horseTexture;
 static Texture2D mouseTexture;
 static Texture2D pandaTexture;
+static Texture2D pigTexture;
 static Texture2D wolfTexture;
 
 static void LoadTileTextures(Texture2D textureArray[BOARD_TEXTURE_AMOUNT], Texture2D* faceDown)
 {
     // Load card face textures
     bearTexture = LoadTexture("assets/textures/bear.png");
-    bobTexture = LoadTexture("assets/textures/bob.png");
     bunnyTexture = LoadTexture("assets/textures/bunny.png");
     catTexture = LoadTexture("assets/textures/cat.png");
+    cowTexture = LoadTexture("assets/textures/cow.png");
     dogTexture = LoadTexture("assets/textures/dog.png");
-    faceTexture = LoadTexture("assets/textures/face.png");
     horseTexture = LoadTexture("assets/textures/horse.png");
     mouseTexture = LoadTexture("assets/textures/mouse.png");
     pandaTexture = LoadTexture("assets/textures/panda.png");
+    pigTexture = LoadTexture("assets/textures/pig.png");
     wolfTexture = LoadTexture("assets/textures/wolf.png");
 
     // Load the face down texture
@@ -32,14 +32,14 @@ static void LoadTileTextures(Texture2D textureArray[BOARD_TEXTURE_AMOUNT], Textu
 
     // Set textureArray's elements to the card face textures
     textureArray[0] = bearTexture;
-    textureArray[1] = bobTexture;
-    textureArray[2] = bunnyTexture;
-    textureArray[3] = catTexture;
+    textureArray[1] = bunnyTexture;
+    textureArray[2] = catTexture;
+    textureArray[3] = cowTexture;
     textureArray[4] = dogTexture;
-    textureArray[5] = faceTexture;
-    textureArray[6] = horseTexture;
-    textureArray[7] = mouseTexture;
-    textureArray[8] = pandaTexture;
+    textureArray[5] = horseTexture;
+    textureArray[6] = mouseTexture;
+    textureArray[7] = pandaTexture;
+    textureArray[8] = pigTexture;
     textureArray[9] = wolfTexture;
 }
 

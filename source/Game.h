@@ -1,13 +1,8 @@
 #pragma once
+#include "Background.h"
 #include "Board.h"
-#include "Types.h"
 
-struct WindowData
-{
-    u32 width;
-    u32 height;
-    const char* title;
-};
+struct WindowData;
 
 class Game
 {
@@ -21,10 +16,14 @@ class Game
     void Init(const WindowData& data);
     void ShutDown();
 
+    void ToggleFullscreenWindow();
+
+    void HandleEvents();
     void Update();
     void Render();
 
   private:
-    Board board;
-    WindowData windowData;
+    Board m_board;
+    BGShader m_bgShader;
+    WindowData m_windowData;
 };
