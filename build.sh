@@ -3,6 +3,7 @@ cd build
 
 if [ "$1" == "clean" ]; then
     make clean
+    rm -rf assets
 
     echo -n "Would you like to remove config files too? (y/n): "
     read removeConfig
@@ -12,8 +13,7 @@ if [ "$1" == "clean" ]; then
 
     cd ..
 elif [ "$1" == "run" ]; then
-    cd KawaiiMatch3
-    ./KawaiiMatch3
+    ./KawaiiMemoryGame
     cd ../..
 else
     if [ "$1" == "debug" ]; then
