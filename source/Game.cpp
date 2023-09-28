@@ -70,13 +70,6 @@ void Game::HandleEvents()
     // Check for when the user wants to go fullscreen
     if (IsKeyPressed(KEY_F))
         ToggleFullscreenWindow();
-
-    // Set all the cards to be face down
-    if (IsKeyPressed(KEY_R))
-    {
-        for (int i = 0; i < m_board.tiles.size(); i++)
-            m_board.tiles[i]->faceUp = false;
-    }
 }
 
 void Game::Update()

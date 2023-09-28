@@ -1,6 +1,8 @@
 #include "Board.h"
 #include <stdio.h>
 
+#define CARD_FLIP_TIME_IN_SECS 0.7f
+
 // A bunch of card face textures
 static Texture2D bearTexture;
 static Texture2D bunnyTexture;
@@ -12,6 +14,8 @@ static Texture2D mouseTexture;
 static Texture2D pandaTexture;
 static Texture2D pigTexture;
 static Texture2D wolfTexture;
+
+static std::vector<Tile*> cardsFlipped;
 
 static void LoadTileTextures(Texture2D textureArray[BOARD_TEXTURE_AMOUNT], Texture2D* faceDown)
 {
@@ -110,9 +114,36 @@ void Board::Update()
         {
             tiles[i]->tint = {0xDD, 0xDD, 0xDD, 0xFF};
 
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && cardsFlipped.size() < 2)
+            {
                 tiles[i]->faceUp = true;
+                cardsFlipped.push_back(tiles[i]);
+
+                if (cardsFlipped.size() == 2)
+                    StartTimer(&timer, CARD_FLIP_TIME_IN_SECS);
+            }
         }
+    }
+    if (cardsFlipped.size() == 2)
+    {
+        // Check for matches
+        if (cardsFlipped[0]->face.id == cardsFlipped[1]->face.id)
+        {
+            cardsFlipped[0]->isMatch = true;
+            cardsFlipped[1]->isMatch = true;
+        }
+        UpdateTimer(&timer);
+    }
+
+    if (timer.hasStarted && IsTimerDone(&timer))
+    {
+        // If the card isn't a match, flip it back over
+        for (int i = 0; i < tiles.size(); i++)
+            if (!tiles[i]->isMatch)
+                tiles[i]->faceUp = false;
+
+        cardsFlipped.clear();
+        timer.lifetime = CARD_FLIP_TIME_IN_SECS;
     }
 }
 

@@ -6,6 +6,7 @@
 struct Tile
 {
     bool faceUp = false;
+    bool isMatch = false;
     Vector2 position;
     Vector2 size;
     Rectangle body;

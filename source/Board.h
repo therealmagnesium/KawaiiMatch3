@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Tile.h"
+#include "Timer.h"
 #include "Types.h"
 #include <vector>
 
@@ -14,6 +15,7 @@ struct Board
     Texture2D faces[BOARD_TEXTURE_AMOUNT];
     size_t facesLength = 0;
     Vector2 tileOffset;
+    Timer timer;
     std::vector<Tile*> tiles;
     std::vector<Texture2D> selected;
 
