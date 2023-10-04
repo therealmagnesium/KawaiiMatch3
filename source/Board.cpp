@@ -1,7 +1,7 @@
 #include "Board.h"
 #include <stdio.h>
 
-#define CARD_FLIP_TIME_IN_SECS 0.7f
+#define CARD_FLIP_TIME_IN_SECS 0.8f
 
 // A bunch of card face textures
 static Texture2D bearTexture;

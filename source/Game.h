@@ -1,4 +1,4 @@
-#pragma once
+#pragma onceme
 #include "Background.h"
 #include "Board.h"
 
@@ -25,5 +25,6 @@ class Game
   private:
     Board m_board;
     BGShader m_bgShader;
+    Music m_music;
     WindowData m_windowData;
 };

@@ -23,21 +23,25 @@ void Game::Init(const WindowData& data)
 {
     // Init raylib shit
     InitWindow(data.width, data.height, data.title);
+    InitAudioDevice();
     SetTargetFPS(480);
     GuiLoadStyle("assets/ui/lavanda.rgs");
 
     m_bgShader = SetupBackground(data);
+    m_music = LoadMusicStream("assets/audio/music/letter-from-brazil.mp3");
 
     // Setup game stuff
     m_board.Fill();
     m_board.Shuffle();
     m_board.Setup(data.width, data.height);
+    PlayMusicStream(m_music);
 }
 
 void Game::ShutDown()
 {
     // Free allocated memory
     m_board.Clean();
+    UnloadMusicStream(m_music);
     CleanBackground(m_bgShader);
     CloseWindow();
 }
@@ -77,6 +81,7 @@ void Game::Update()
     // Handle events and update everything
     HandleEvents();
     UpdateBackground(m_bgShader, &time);
+    UpdateMusicStream(m_music);
     m_board.Update();
 }
 
