@@ -6,6 +6,7 @@ struct Timer
     bool hasStarted;
 };
 
+void ResetTimer(Timer* timer, float lifetime);
 void StartTimer(Timer* timer, float lifetime);
 void UpdateTimer(Timer* timer);
 bool IsTimerDone(Timer* timer);

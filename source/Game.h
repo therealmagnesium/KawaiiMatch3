@@ -1,4 +1,5 @@
 #pragma onceme
+#include "Audio.h"
 #include "Background.h"
 #include "Board.h"
 
@@ -23,8 +24,11 @@ class Game
     void Render();
 
   private:
+    bool m_paused = false;
     Board m_board;
     BGShader m_bgShader;
-    Music m_music;
+    PauseShader m_pauseShader;
+    Font m_font;
+    Playlist m_playlist;
     WindowData m_windowData;
 };

@@ -1,7 +1,14 @@
 #include "Board.h"
+#include "raylib.h"
 #include <stdio.h>
 
-#define CARD_FLIP_TIME_IN_SECS 0.8f
+#define CARD_FLIP_TIME_IN_SECS 1.0f
+
+enum class MatchState
+{
+    Correct = 0,
+    Incorrect
+};
 
 // A bunch of card face textures
 static Texture2D bearTexture;
@@ -15,6 +22,11 @@ static Texture2D pandaTexture;
 static Texture2D pigTexture;
 static Texture2D wolfTexture;
 
+// Right and wrong match textures
+static Texture2D incorrectMatchTexture;
+static Texture2D correctMatchTexture;
+
+static MatchState matchState = MatchState::Incorrect;
 static std::vector<Tile*> cardsFlipped;
 
 static void LoadTileTextures(Texture2D textureArray[BOARD_TEXTURE_AMOUNT], Texture2D* faceDown)
@@ -30,6 +42,10 @@ static void LoadTileTextures(Texture2D textureArray[BOARD_TEXTURE_AMOUNT], Textu
     pandaTexture = LoadTexture("assets/textures/panda.png");
     pigTexture = LoadTexture("assets/textures/pig.png");
     wolfTexture = LoadTexture("assets/textures/wolf.png");
+
+    // Load right and wrong match textures
+    incorrectMatchTexture = LoadTexture("assets/textures/incorrect_match.png");
+    correctMatchTexture = LoadTexture("assets/textures/correct_match.png");
 
     // Load the face down texture
     *faceDown = LoadTexture("assets/textures/leaf.png");
@@ -131,6 +147,7 @@ void Board::Update()
         {
             cardsFlipped[0]->isMatch = true;
             cardsFlipped[1]->isMatch = true;
+            matchState = MatchState::Correct;
         }
         UpdateTimer(&timer);
     }
@@ -142,8 +159,10 @@ void Board::Update()
             if (!tiles[i]->isMatch)
                 tiles[i]->faceUp = false;
 
+        matchState = MatchState::Incorrect;
         cardsFlipped.clear();
-        timer.lifetime = CARD_FLIP_TIME_IN_SECS;
+
+        ResetTimer(&timer, CARD_FLIP_TIME_IN_SECS);
     }
 }
 
@@ -155,6 +174,45 @@ void Board::Draw()
         if (tiles[i])
             tiles[i]->Draw(faceDownTexture);
     }
+
+    // Show the correct texture if there was match or not
+    if (timer.lifetime > 0.f && timer.hasStarted)
+    {
+        switch (matchState)
+        {
+        case MatchState::Correct:
+        {
+            Rectangle source, dest;
+            source.x = source.y = 0;
+            source.width = correctMatchTexture.width;
+            source.height = correctMatchTexture.height;
+
+            dest.width = 400;
+            dest.height = 400;
+            dest.x = 1280.f / 2 - dest.width / 2;
+            dest.y = 720.f / 2 - dest.height / 2;
+
+            DrawTexturePro(correctMatchTexture, source, dest, {0.f, 0.f}, 0.f, WHITE);
+
+            break;
+        }
+        case MatchState::Incorrect:
+        {
+            Rectangle source, dest;
+            source.x = source.y = 0;
+            source.width = incorrectMatchTexture.width;
+            source.height = incorrectMatchTexture.height;
+
+            dest.width = 400;
+            dest.height = 400;
+            dest.x = 1280.f / 2 - dest.width / 2;
+            dest.y = 720.f / 2 - dest.height / 2;
+
+            DrawTexturePro(incorrectMatchTexture, source, dest, {0.f, 0.f}, 0.f, WHITE);
+            break;
+        }
+        }
+    }
 }
 
 void Board::Clean()
@@ -165,6 +223,9 @@ void Board::Clean()
         if (tiles[i])
             delete tiles[i];
     }
+
+    UnloadTexture(incorrectMatchTexture);
+    UnloadTexture(correctMatchTexture);
 
     // Unload textures from selected std::vector
     for (int i = 0; i < selected.size(); i++)

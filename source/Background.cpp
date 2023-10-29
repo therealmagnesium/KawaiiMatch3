@@ -12,7 +12,7 @@ BGShader SetupBackground(const WindowData& data)
     UnloadImage(tempImage);
 
     // Set the base shader and set the uniform locations
-    returnVal.shader = LoadShader(NULL, "assets/shaders/PanningSquaresFrag.glsl");
+    returnVal.shader = LoadShader(NULL, "assets/shaders/BackgroundFrag.glsl");
     returnVal.timeLocation = GetShaderLocation(returnVal.shader, "uTime");
     returnVal.particleColorLocation = GetShaderLocation(returnVal.shader, "uParticleColor");
 
@@ -29,4 +29,23 @@ void UpdateBackground(const BGShader& bgShader, float* time)
 void CleanBackground(const BGShader& bgShader)
 {
     UnloadShader(bgShader.shader);
+}
+
+PauseShader SetupPauseShader(const WindowData& data)
+{
+    PauseShader returnVal;
+
+    // Generate the texture from the image buffer, then unload the temp image
+    Image tempImage = GenImageColor(data.width, data.height, BLANK);
+    returnVal.texture = LoadTextureFromImage(tempImage);
+    UnloadImage(tempImage);
+
+    returnVal.shader = LoadShader(NULL, "assets/shaders/PauseFrag.glsl");
+
+    return returnVal;
+}
+
+void CleanPauseShader(const PauseShader& pauseShader)
+{
+    UnloadShader(pauseShader.shader);
 }

@@ -5,6 +5,7 @@
 #include <raylib.h>
 #include <stdio.h>
 
+#define TARGET_FPS 480
 #define FPS_MARGIN 20
 
 static float time = 0.f;
@@ -21,28 +22,36 @@ Game::~Game()
 
 void Game::Init(const WindowData& data)
 {
-    // Init raylib shit
+    // Initialize Raylib
     InitWindow(data.width, data.height, data.title);
     InitAudioDevice();
-    SetTargetFPS(480);
+    SetTargetFPS(TARGET_FPS);
+
+    // Load the font and gui style
+    m_font = LoadFont("assets/ui/font.ttf");
     GuiLoadStyle("assets/ui/lavanda.rgs");
 
-    m_bgShader = SetupBackground(data);
-    m_music = LoadMusicStream("assets/audio/music/letter-from-brazil.mp3");
-
-    // Setup game stuff
+    // Setup the whole board
     m_board.Fill();
     m_board.Shuffle();
     m_board.Setup(data.width, data.height);
-    PlayMusicStream(m_music);
+
+    // Setup background shader and audio
+    m_bgShader = SetupBackground(data);
+    m_pauseShader = SetupPauseShader(data);
+    m_playlist.LoadSongs();
+    PlayMusicStream(m_playlist.GetCurrentSong());
 }
 
 void Game::ShutDown()
 {
     // Free allocated memory
     m_board.Clean();
-    UnloadMusicStream(m_music);
+    m_playlist.UnloadSongs();
+    UnloadFont(m_font);
     CleanBackground(m_bgShader);
+    CleanPauseShader(m_pauseShader);
+    CloseAudioDevice();
     CloseWindow();
 }
 
@@ -74,14 +83,18 @@ void Game::HandleEvents()
     // Check for when the user wants to go fullscreen
     if (IsKeyPressed(KEY_F))
         ToggleFullscreenWindow();
+
+    if (IsKeyPressed(KEY_P))
+        m_paused = !m_paused;
 }
 
 void Game::Update()
 {
     // Handle events and update everything
     HandleEvents();
+    HandleAudioChanges(m_playlist.GetCurrentSong(), m_paused);
     UpdateBackground(m_bgShader, &time);
-    UpdateMusicStream(m_music);
+    m_playlist.Update();
     m_board.Update();
 }
 
@@ -93,13 +106,20 @@ void Game::Render()
 
         // Apply the background shader only to the background texture
         BeginShaderMode(m_bgShader.shader);
-        {
-            DrawTexture(m_bgShader.texture, 0, 0, WHITE);
-        }
+        DrawTexture(m_bgShader.texture, 0, 0, WHITE);
         EndShaderMode();
 
         m_board.Draw();
+        m_playlist.DisplayCurrentSongInfo(m_font);
         DrawFPS(FPS_MARGIN / 2, m_windowData.height - FPS_MARGIN);
+
+        // If the game is paused, enable the pause shader
+        if (m_paused)
+        {
+            BeginShaderMode(m_pauseShader.shader);
+            DrawTexture(m_pauseShader.texture, 0, 0, WHITE);
+            EndShaderMode();
+        }
     }
     EndDrawing();
 }
